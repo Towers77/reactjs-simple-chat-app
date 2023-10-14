@@ -17,6 +17,9 @@ export default {
 			fontFamily: {
 				'fira-code': ['"Fira Code"', 'monospace'],
 			},
+			maxWidth: {
+				'1/2': '50%',
+			},
 		},
 	},
 	plugins: [require('daisyui')],
