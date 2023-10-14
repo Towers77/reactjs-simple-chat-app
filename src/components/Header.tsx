@@ -1,4 +1,6 @@
-const Header = () => {
+export interface HeaderProps {}
+
+export const Header = ({}: HeaderProps) => {
 	return (
 		<header className="p-6 bg-navy flex place-items-start gap-4 h-96 absolute w-screen">
 			<svg
@@ -23,5 +25,3 @@ const Header = () => {
 		</header>
 	);
 };
-
-export default Header;

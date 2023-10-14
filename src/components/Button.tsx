@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-interface ButtonProps {
+export interface ButtonProps {
 	text?: string;
 	Icon?: ReactNode;
 	textColor: string;
@@ -9,7 +9,7 @@ interface ButtonProps {
 	handleClick: () => void;
 }
 
-const Button = ({
+export const Button = ({
 	text,
 	Icon,
 	textColor,
@@ -27,5 +27,3 @@ const Button = ({
 		</button>
 	);
 };
-
-export default Button;

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-interface InputWithLabelProps {
+export interface InputWithLabelProps {
 	label: string;
 	maxLength: number;
 	type: string;
 	handleChange?: () => void;
 }
 
-const InputWithLabel = ({
+export const InputWithLabel = ({
 	label,
 	maxLength,
 	type,
@@ -36,5 +36,3 @@ const InputWithLabel = ({
 		</label>
 	);
 };
-
-export default InputWithLabel;
