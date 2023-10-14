@@ -19,7 +19,7 @@ const Button = ({
 }: ButtonProps) => {
 	return (
 		<button
-			className={`${textColor} ${bgColor} ${hoverColor} flex gap-2 place-items-center px-4 py-2 rounded-md shadow duration-150 hover:scale-105 active:scale-100`}
+			className={`${textColor} ${bgColor} ${hoverColor} flex gap-2 justify-center px-4 py-2 rounded-md shadow duration-200 hover:scale-105 hover:shadow-lg active:scale-100 min-w-fit min-h-fit`}
 			onClick={handleClick}
 		>
 			{Icon}

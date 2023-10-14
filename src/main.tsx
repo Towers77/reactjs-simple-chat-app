@@ -6,7 +6,7 @@ import router from './router';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<div className="bg-gradient-to-l from-navy-light via-almond to-navy-light h-screen w-screen">
+		<div className="bg-almond h-screen w-screen">
 			<RouterProvider router={router} />
 		</div>
 	</React.StrictMode>

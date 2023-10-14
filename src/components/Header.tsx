@@ -1,8 +1,8 @@
 const Header = () => {
 	return (
-		<header className="p-6 bg-navy flex place-items-center gap-4">
+		<header className="p-6 bg-navy flex place-items-start gap-4 h-96 absolute w-screen">
 			<svg
-				className="w-[48px] h-[48px] text-almond drop-shadow"
+				className="w-[40px] h-[40px] text-almond drop-shadow"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 18"
@@ -17,7 +17,7 @@ const Header = () => {
 					fill="currentColor"
 				/>
 			</svg>
-			<h1 className="text-3xl text-almond font-fira-code drop-shadow">
+			<h1 className="text-2xl text-almond font-fira-code drop-shadow mt-1">
 				Simple Chat App
 			</h1>
 		</header>
