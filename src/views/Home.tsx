@@ -1,17 +1,71 @@
 import { useState } from 'react';
-import Button from '../components/Button';
-import Header from '../components/Header';
-import InputWithLabel from '../components/InputWithLabel';
+import { Button, ButtonProps } from '../components/Button';
+import { Header } from '../components/Header';
+import {
+	InputWithLabel,
+	InputWithLabelProps,
+} from '../components/InputWithLabel';
 import { Transition } from '@headlessui/react';
+import Form from '../components/Form';
 
 const Home = () => {
 	const [activeForm, setActiveForm] = useState('register');
+
 	const handleRegister = () => {};
+
+	const registerInputs: InputWithLabelProps[] = [
+		{
+			label: 'Username',
+			type: 'text',
+			maxLength: 25,
+			handleChange: () => {},
+		},
+		{
+			label: 'Email',
+			type: 'text',
+			maxLength: 256,
+			handleChange: () => {},
+		},
+		{
+			label: 'Password',
+			type: 'password',
+			maxLength: 256,
+			handleChange: () => {},
+		},
+	];
+
+	const loginInputs: InputWithLabelProps[] = [
+		{
+			label: 'Email',
+			type: 'text',
+			maxLength: 256,
+			handleChange: () => {},
+		},
+		{
+			label: 'Password',
+			type: 'password',
+			maxLength: 256,
+			handleChange: () => {},
+		},
+	];
+
+	const registerButton: ButtonProps = {
+		text: 'Sign In',
+		textColor: 'text-almond',
+		bgColor: 'bg-oxford',
+		handleClick: handleRegister,
+	};
+
+	const loginButton: ButtonProps = {
+		text: 'Log In',
+		textColor: 'text-almond',
+		bgColor: 'bg-oxford',
+		handleClick: () => {},
+	};
 
 	return (
 		<>
 			<Header />
-
 			<main className="absolute left-1/2 top-1/2 w-4/6 h-4/6 -translate-x-1/2 -translate-y-1/2 bg-almond shadow-lg text-oxford font-fira-code rounded-sm grid grid-cols-2">
 				<Transition
 					show={activeForm === 'register'}
@@ -22,30 +76,14 @@ const Home = () => {
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="m-10 flex flex-col gap-10">
-						<span className="text-3xl">Sign In</span>
-						<InputWithLabel label="Username" type="text" maxLength={25} />
-						<InputWithLabel label="Email Address" type="text" maxLength={256} />
-						<InputWithLabel label="Password" type="password" maxLength={256} />
-
-						<div className="flex justify-center">
-							<Button
-								text="Sign In"
-								textColor="text-almond"
-								bgColor="bg-oxford"
-								handleClick={handleRegister}
-							/>
-						</div>
-						<span className="text-navy-light self-center">
-							Already have an account?
-						</span>
-						<span
-							className="text-navy-light cursor-pointer self-center hover:underline hover:text-navy duration-100"
-							onClick={() => setActiveForm('login')}
-						>
-							Log In!
-						</span>
-					</div>
+					<Form
+						title="Sign In"
+						inputPropsList={registerInputs}
+						submitButtonProps={registerButton}
+						handleClickText={() => setActiveForm('login')}
+						belowText="Already have an account?"
+						belowTextClickable="Log In!"
+					/>
 				</Transition>
 				<Transition
 					show={activeForm === 'login'}
@@ -56,29 +94,14 @@ const Home = () => {
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="m-10 flex flex-col gap-10">
-						<span className="text-3xl">Log In</span>
-						<InputWithLabel label="Email Address" type="text" maxLength={256} />
-						<InputWithLabel label="Password" type="password" maxLength={256} />
-
-						<div className="flex justify-center">
-							<Button
-								text="Log In"
-								textColor="text-almond"
-								bgColor="bg-oxford"
-								handleClick={handleRegister}
-							/>
-						</div>
-						<span className="text-navy-light self-center">
-							Don't have an account?
-						</span>
-						<span
-							className="text-navy-light cursor-pointer self-center hover:underline hover:text-navy duration-100"
-							onClick={() => setActiveForm('register')}
-						>
-							Sign In!
-						</span>
-					</div>
+					<Form
+						title="Log In"
+						inputPropsList={loginInputs}
+						submitButtonProps={loginButton}
+						handleClickText={() => setActiveForm('register')}
+						belowText="Don't have an account?"
+						belowTextClickable="Sign In!"
+					/>
 				</Transition>
 				<div className="bg-oxford absolute w-1/2 h-full right-0 py-20 px-32 flex flex-col gap-10">
 					<span className="text-almond text-xl">
