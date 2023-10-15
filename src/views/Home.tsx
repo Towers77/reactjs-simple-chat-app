@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { Button, ButtonProps } from '../components/Button';
+import { ButtonProps } from '../components/Button';
 import { Header } from '../components/Header';
-import {
-	InputWithLabel,
-	InputWithLabelProps,
-} from '../components/InputWithLabel';
+import { InputWithLabelProps } from '../components/InputWithLabel';
 import { Transition } from '@headlessui/react';
 import Form from '../components/Form';
+import { ChatBubble } from '../components/ChatBubble';
 
 const Home = () => {
 	const [activeForm, setActiveForm] = useState('register');
@@ -103,37 +101,30 @@ const Home = () => {
 						belowTextClickable="Sign In!"
 					/>
 				</Transition>
-				<div className="bg-oxford absolute w-1/2 h-full right-0 py-20 px-32 flex flex-col gap-10">
+				<div className="bg-oxford absolute w-1/2 h-full right-0 py-20 px-32 flex flex-col gap-6">
 					<span className="text-almond text-xl">
 						Chat with anyone, <br /> from anywhere.
 					</span>
 					<div className="h-full w-full bg-almond rounded shadow-xl flex flex-col-reverse">
-						<div className="chat chat-end">
-							<div className="chat-bubble flex place-items-center text-almond bg-oxford shadow-md max-w-1/2">
-								Good, still working on that chat app...
-							</div>
-							<div className="chat-header text-md">Robert</div>
-							<div className="chat-footer text-sm opacity-50 mt-1">16:06</div>
-						</div>
-						<div className="chat chat-start">
-							<div className="chat-bubble flex place-items-center text-almond bg-oxford shadow-md max-w-1/2">
-								How've you been?
-							</div>
-							<div className="chat-footer text-sm opacity-50 mt-1">16:04</div>
-						</div>
-						<div className="chat chat-start">
-							<div className="chat-bubble flex place-items-center text-almond bg-oxford shadow-md max-w-1/2">
-								Hey!
-							</div>
-							<div className="chat-header text-md">Karen</div>
-						</div>
-						<div className="chat chat-end">
-							<div className="chat-bubble flex place-items-center text-almond bg-oxford shadow-md max-w-1/2">
-								Hello
-							</div>
-							<div className="chat-header text-md">Robert</div>
-							<div className="chat-footer text-sm opacity-50 mt-1">16:00</div>
-						</div>
+						<ChatBubble
+							type="chat-end"
+							message="Good, still working on that chat app..."
+							sender="Robert"
+							sentAt={new Date(2023, 10, 14, 16, 6)}
+						/>
+						<ChatBubble
+							type="chat-start"
+							message="How've you been?"
+							sentAt={new Date(2023, 10, 14, 16, 4)}
+						/>
+						<ChatBubble type="chat-start" message="Hey!" sender="Karen" />
+
+						<ChatBubble
+							type="chat-end"
+							message="Hello there!"
+							sender="Robert"
+							sentAt={new Date(2023, 10, 14, 16)}
+						/>
 					</div>
 				</div>
 			</main>
