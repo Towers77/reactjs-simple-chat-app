@@ -28,6 +28,7 @@ const Form = ({
 						label={elem.label}
 						type={elem.type}
 						maxLength={elem.maxLength}
+						errorText={elem.errorText}
 						handleChange={elem.handleChange}
 					/>
 				);
