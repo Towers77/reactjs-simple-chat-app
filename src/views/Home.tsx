@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { ButtonProps } from '../components/Button';
 import { Header } from '../components/Header';
 import { InputWithLabelProps } from '../components/InputWithLabel';
@@ -7,6 +7,7 @@ import Form from '../components/Form';
 import { ChatBubble } from '../components/ChatBubble';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../utils/context/UserProvider';
 
 const emailRegex = new RegExp('/^[a-z0-9.]{1,64}@[a-z0-9.]{1,64}$/i');
 
@@ -23,6 +24,9 @@ export const Home = () => {
 
 	// Form to show state
 	const [activeForm, setActiveForm] = useState('register');
+
+	// Context state
+	const userState = useContext(UserContext);
 
 	const navigate = useNavigate();
 
@@ -67,7 +71,9 @@ export const Home = () => {
 			setActiveForm('login');
 		} catch (error) {
 			setActiveForm('register');
-			if (error instanceof Error) console.log(error);
+			if (error instanceof AxiosError) {
+				console.log(error);
+			}
 		}
 	};
 
@@ -100,6 +106,7 @@ export const Home = () => {
 				}
 			);
 
+			userState?.setId(response.data.id);
 			navigate(`/profile/${response.data.id}`);
 		} catch (error) {
 			if (error instanceof AxiosError) {

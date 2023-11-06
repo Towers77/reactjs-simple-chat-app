@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../components/Button';
+import { UserContext } from '../utils/context/UserProvider';
 
 export const Profile = () => {
-	const [username, setUsername] = useState('');
+	const userState = useContext(UserContext);
 
 	const { id } = useParams();
 
@@ -19,8 +20,8 @@ export const Profile = () => {
 						withCredentials: true,
 					}
 				);
-				console.log(response);
-				setUsername(response.data.username);
+
+				userState?.setName(response.data.username);
 			} catch (error) {
 				console.log(error);
 			}
@@ -48,7 +49,7 @@ export const Profile = () => {
 
 	return (
 		<div>
-			{username}{' '}
+			{userState?.user.name}
 			<Button
 				text="logout"
 				textColor="text-white"
