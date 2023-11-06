@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from './Button';
 import { InputWithLabel, InputWithLabelProps } from './InputWithLabel';
 
-interface FormProps {
+export interface FormProps {
 	title: string;
 	inputPropsList: InputWithLabelProps[];
 	submitButtonProps: ButtonProps;
@@ -10,7 +10,7 @@ interface FormProps {
 	handleClickText: () => void;
 }
 
-const Form = ({
+export const Form = ({
 	title,
 	inputPropsList,
 	submitButtonProps,
@@ -51,5 +51,3 @@ const Form = ({
 		</div>
 	);
 };
-
-export default Form;
