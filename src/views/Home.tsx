@@ -3,7 +3,7 @@ import { ButtonProps } from '../components/Button';
 import { Header } from '../components/Header';
 import { InputWithLabelProps } from '../components/InputWithLabel';
 import { Transition } from '@headlessui/react';
-import Form from '../components/Form';
+import { Form } from '../components/Form';
 import { ChatBubble } from '../components/ChatBubble';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ export const Home = () => {
 	const [emailError, setEmailError] = useState('');
 	const [passwordError, setPasswordError] = useState('');
 
-	// Form to show state
+	// Showing form state
 	const [activeForm, setActiveForm] = useState('register');
 
 	// Context state
@@ -122,6 +122,16 @@ export const Home = () => {
 		}
 	};
 
+	const handleClickText = (activeForm: string) => {
+		setActiveForm(activeForm);
+		setUsernameError('');
+		setEmailError('');
+		setPasswordError('');
+		setEmail('');
+		setPassword('');
+		setUsername('');
+	};
+
 	const registerInputs: InputWithLabelProps[] = [
 		{
 			label: 'Username',
@@ -203,18 +213,13 @@ export const Home = () => {
 					enterTo="opacity-100"
 					leave="transition-opacity duration-0"
 					leaveFrom="opacity-100"
-					leaveTo="opacity-0"
+					leaveTo="opacity-0 hidden"
 				>
 					<Form
 						title="Sign In"
 						inputPropsList={registerInputs}
 						submitButtonProps={registerButton}
-						handleClickText={() => {
-							setActiveForm('login');
-							setUsernameError('');
-							setEmailError('');
-							setPasswordError('');
-						}}
+						handleClickText={() => handleClickText('login')}
 						belowText="Already have an account?"
 						belowTextClickable="Log In!"
 					/>
@@ -226,18 +231,13 @@ export const Home = () => {
 					enterTo="opacity-100"
 					leave="transition-opacity duration-0"
 					leaveFrom="opacity-100"
-					leaveTo="opacity-0"
+					leaveTo="opacity-0 hidden"
 				>
 					<Form
 						title="Log In"
 						inputPropsList={loginInputs}
 						submitButtonProps={loginButton}
-						handleClickText={() => {
-							setActiveForm('register');
-							setUsernameError('');
-							setEmailError('');
-							setPasswordError('');
-						}}
+						handleClickText={() => handleClickText('register')}
 						belowText="Don't have an account?"
 						belowTextClickable="Sign In!"
 					/>
