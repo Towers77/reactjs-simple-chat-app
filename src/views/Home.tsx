@@ -9,7 +9,8 @@ import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../utils/context/UserProvider';
 
-const emailRegex = new RegExp('/^[a-z0-9.]{1,64}@[a-z0-9.]{1,64}$/i');
+const emailRegex =
+	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 export const Home = () => {
 	// Form input states
@@ -28,6 +29,8 @@ export const Home = () => {
 	// Context state
 	const userState = useContext(UserContext);
 
+	// Other
+	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 
 	const handleRegister = async () => {
@@ -41,7 +44,7 @@ export const Home = () => {
 				setUsernameError('Username must be atleast 3 characters long');
 				return;
 			}
-			if (emailRegex.test(email)) {
+			if (!emailRegex.test(email)) {
 				setEmailError('Please enter a valid email address');
 				return;
 			}
@@ -72,6 +75,12 @@ export const Home = () => {
 		} catch (error) {
 			setActiveForm('register');
 			if (error instanceof AxiosError) {
+				setUsernameError('');
+				setEmailError('');
+				setPasswordError('');
+				setEmail('');
+				setPassword('');
+				setUsername('');
 				console.log(error);
 			}
 		}
@@ -79,7 +88,8 @@ export const Home = () => {
 
 	const handleLogin = async () => {
 		try {
-			if (emailRegex.test(email)) {
+			// Form validations
+			if (!emailRegex.test(email)) {
 				setEmailError('Please enter a valid email address');
 				return;
 			}
@@ -91,6 +101,7 @@ export const Home = () => {
 				setPasswordError('Password must be atleast 6 characters long');
 				return;
 			}
+			setIsLoading(true);
 
 			const response = await axios.post(
 				'http://localhost:3000/api/v1/auth/login',
@@ -107,9 +118,16 @@ export const Home = () => {
 			);
 
 			userState?.setId(response.data.id);
-			navigate(`/profile/${response.data.id}`);
+			setTimeout(() => navigate(`/profile/${response.data.id}`), 1000);
 		} catch (error) {
 			if (error instanceof AxiosError) {
+				setIsLoading(false);
+				setUsernameError('');
+				setEmailError('');
+				setPasswordError('');
+				setEmail('');
+				setPassword('');
+				setUsername('');
 				console.log(error);
 				if (
 					error.response?.data.message ===
@@ -204,84 +222,92 @@ export const Home = () => {
 
 	return (
 		<>
-			<Header />
-			<main className="absolute left-1/2 top-1/2 sm:w-4/6 h-4/6 -translate-x-1/2 -translate-y-1/2 bg-almond shadow-lg text-oxford font-fira-code rounded-sm grid xl:grid-cols-2">
-				<Transition
-					show={activeForm === 'register'}
-					enter="transition-opacity duration-200"
-					enterFrom="opacity-0"
-					enterTo="opacity-100"
-					leave="transition-opacity duration-0"
-					leaveFrom="opacity-100"
-					leaveTo="opacity-0 hidden"
-				>
-					<Form
-						title="Sign In"
-						inputPropsList={registerInputs}
-						submitButtonProps={registerButton}
-						handleClickText={() => handleClickText('login')}
-						belowText="Already have an account?"
-						belowTextClickable="Log In!"
-					/>
-				</Transition>
-				<Transition
-					show={activeForm === 'login'}
-					enter="transition-opacity duration-200"
-					enterFrom="opacity-0"
-					enterTo="opacity-100"
-					leave="transition-opacity duration-0"
-					leaveFrom="opacity-100"
-					leaveTo="opacity-0 hidden"
-				>
-					<Form
-						title="Log In"
-						inputPropsList={loginInputs}
-						submitButtonProps={loginButton}
-						handleClickText={() => handleClickText('register')}
-						belowText="Don't have an account?"
-						belowTextClickable="Sign In!"
-					/>
-				</Transition>
-				<Transition
-					show={activeForm === 'none'}
-					enter="transition-opacity duration-200"
-					enterFrom="opacity-0"
-					enterTo="opacity-100"
-					leave="transition-opacity duration-0"
-					leaveFrom="opacity-100"
-					leaveTo="opacity-0"
-				>
-					<div className="w-full h-full flex justify-center">
-						<div className="loading loading-spinner loading-lg text-oxford"></div>
-					</div>
-				</Transition>
-				<div className="bg-oxford absolute w-1/2 h-full right-0 py-24 pt-12 px-28 xl:flex flex-col gap-6 hidden">
-					<span className="text-almond text-md 2xl:text-xl">
-						Chat with anyone, <br /> from anywhere.
-					</span>
-					<div className="h-full w-full bg-gradient-to-tr from-navy-light via-almond to-navy-light rounded shadow-xl flex flex-col-reverse min-h-fit min-w-fit text-xs 2xl:text-md">
-						<ChatBubble
-							type="chat-end"
-							message="Good, still working on that chat app..."
-							sender="Robert"
-							sentAt={new Date(2023, 10, 14, 16, 6)}
-						/>
-						<ChatBubble
-							type="chat-start"
-							message="How've you been?"
-							sentAt={new Date(2023, 10, 14, 16, 4)}
-						/>
-						<ChatBubble type="chat-start" message="Hey!" sender="Karen" />
-
-						<ChatBubble
-							type="chat-end"
-							message="Hello there!"
-							sender="Robert"
-							sentAt={new Date(2023, 10, 14, 16)}
-						/>
-					</div>
+			{isLoading ? (
+				<div className="w-full h-full flex flex-col justify-center place-items-center gap-6">
+					<div className="loading loading-spinner loading-lg text-oxford"></div>
 				</div>
-			</main>
+			) : (
+				<>
+					<Header />
+					<main className="absolute left-1/2 top-1/2 sm:w-4/6 h-4/6 -translate-x-1/2 -translate-y-1/2 bg-almond shadow-lg text-oxford font-fira-code rounded-sm grid xl:grid-cols-2">
+						<Transition
+							show={activeForm === 'register'}
+							enter="transition-opacity duration-200"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="transition-opacity duration-0"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0 hidden"
+						>
+							<Form
+								title="Sign In"
+								inputPropsList={registerInputs}
+								submitButtonProps={registerButton}
+								handleClickText={() => handleClickText('login')}
+								belowText="Already have an account?"
+								belowTextClickable="Log In!"
+							/>
+						</Transition>
+						<Transition
+							show={activeForm === 'login'}
+							enter="transition-opacity duration-200"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="transition-opacity duration-0"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0 hidden"
+						>
+							<Form
+								title="Log In"
+								inputPropsList={loginInputs}
+								submitButtonProps={loginButton}
+								handleClickText={() => handleClickText('register')}
+								belowText="Don't have an account?"
+								belowTextClickable="Sign In!"
+							/>
+						</Transition>
+						<Transition
+							show={activeForm === 'none'}
+							enter="transition-opacity duration-200"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="transition-opacity duration-0"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0"
+						>
+							<div className="w-full h-full flex justify-center">
+								<div className="loading loading-spinner loading-lg text-oxford"></div>
+							</div>
+						</Transition>
+						<div className="bg-oxford absolute w-1/2 h-full right-0 py-24 pt-12 px-28 xl:flex flex-col gap-6 hidden">
+							<span className="text-almond text-md 2xl:text-xl">
+								Chat with anyone, <br /> from anywhere.
+							</span>
+							<div className="h-full w-full bg-gradient-to-tr from-navy-light via-almond to-navy-light rounded shadow-xl flex flex-col-reverse min-h-fit min-w-fit text-xs 2xl:text-md">
+								<ChatBubble
+									type="chat-end"
+									message="Good, still working on that chat app..."
+									sender="Robert"
+									sentAt={new Date(2023, 10, 14, 16, 6)}
+								/>
+								<ChatBubble
+									type="chat-start"
+									message="How've you been?"
+									sentAt={new Date(2023, 10, 14, 16, 4)}
+								/>
+								<ChatBubble type="chat-start" message="Hey!" sender="Karen" />
+
+								<ChatBubble
+									type="chat-end"
+									message="Hello there!"
+									sender="Robert"
+									sentAt={new Date(2023, 10, 14, 16)}
+								/>
+							</div>
+						</div>
+					</main>
+				</>
+			)}
 		</>
 	);
 };
