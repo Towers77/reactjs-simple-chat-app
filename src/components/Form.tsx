@@ -39,6 +39,7 @@ export const Form = ({
 					textColor={submitButtonProps.textColor}
 					bgColor={submitButtonProps.bgColor}
 					handleClick={submitButtonProps.handleClick}
+					isDisabled={submitButtonProps.isDisabled}
 				/>
 			</div>
 			<span className="text-navy-light self-center">{belowText}</span>

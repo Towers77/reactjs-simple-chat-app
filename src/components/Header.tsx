@@ -1,10 +1,10 @@
 export interface HeaderProps {}
 
-export const Header = ({}: HeaderProps) => {
+export const Header = () => {
 	return (
-		<header className="p-6 bg-navy flex place-items-start gap-4 h-96 absolute w-screen">
+		<header className="p-6 bg-slate-700 flex place-items-start gap-4 h-96 absolute w-screen z-0">
 			<svg
-				className="w-[40px] h-[40px] text-almond drop-shadow"
+				className="w-[40px] h-[40px] text-white drop-shadow"
 				aria-hidden="true"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 18"
@@ -19,7 +19,7 @@ export const Header = ({}: HeaderProps) => {
 					fill="currentColor"
 				/>
 			</svg>
-			<h1 className="text-2xl text-almond font-fira-code drop-shadow mt-1">
+			<h1 className="text-2xl text-white font-fira-code drop-shadow mt-1">
 				Simple Chat App
 			</h1>
 		</header>

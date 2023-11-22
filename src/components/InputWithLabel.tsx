@@ -15,16 +15,16 @@ export const InputWithLabel = ({
 	errorText,
 	handleChange,
 }: InputWithLabelProps) => {
-	const [labelColor, setLabelColor] = useState('text-navy-light');
+	const [labelColor, setLabelColor] = useState('text-slate-700');
 
 	const showErrorText = errorText !== '';
 
 	const handleFocus = () => {
-		setLabelColor('text-oxford');
+		setLabelColor('text-slate-400');
 	};
 
 	const handleBlur = () => {
-		setLabelColor('text-navy-light');
+		setLabelColor('text-slate-700');
 	};
 	return (
 		<label className="flex flex-col">
@@ -47,7 +47,7 @@ export const InputWithLabel = ({
 				className={`bg-transparent outline-none border-b ${
 					showErrorText
 						? 'border-red-600 text-red-600'
-						: `border-navy-light focus:border-oxford ${labelColor}`
+						: `border-slate-700 focus:border-slate-500 ${labelColor}`
 				} py-1 px-2  duration-300 ease-out focus:scale-105`}
 				type={type}
 				maxLength={maxLength}
