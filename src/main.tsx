@@ -8,9 +8,7 @@ import { UserProvider } from './utils/context/UserProvider';
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<UserProvider>
-			<div className="bg-almond h-screen w-screen">
-				<RouterProvider router={router} />
-			</div>
+			<RouterProvider router={router} />
 		</UserProvider>
 	</React.StrictMode>
 );

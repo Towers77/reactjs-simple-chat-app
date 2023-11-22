@@ -101,8 +101,8 @@ export const Home = () => {
 				setPasswordError('Password must be atleast 6 characters long');
 				return;
 			}
-			setIsLoading(true);
 
+			setActiveForm('none');
 			const response = await axios.post(
 				'http://localhost:3000/api/v1/auth/login',
 				{
@@ -117,11 +117,12 @@ export const Home = () => {
 				}
 			);
 
+			setIsLoading(true);
 			userState?.setId(response.data.id);
 			setTimeout(() => navigate(`/profile/${response.data.id}`), 1000);
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				setIsLoading(false);
+				setActiveForm('login');
 				setUsernameError('');
 				setEmailError('');
 				setPasswordError('');
@@ -208,28 +209,30 @@ export const Home = () => {
 
 	const registerButton: ButtonProps = {
 		text: 'Sign In',
-		textColor: 'text-almond',
-		bgColor: 'bg-oxford',
+		textColor: 'text-white',
+		bgColor: 'bg-slate-600',
 		handleClick: handleRegister,
+		isDisabled: false,
 	};
 
 	const loginButton: ButtonProps = {
 		text: 'Log In',
-		textColor: 'text-almond',
-		bgColor: 'bg-oxford',
+		textColor: 'text-white',
+		bgColor: 'bg-slate-600',
 		handleClick: handleLogin,
+		isDisabled: false,
 	};
 
 	return (
-		<>
+		<div className="bg-slate-950 h-screen w-screen">
 			{isLoading ? (
 				<div className="w-full h-full flex flex-col justify-center place-items-center gap-6">
-					<div className="loading loading-spinner loading-lg text-oxford"></div>
+					<div className="loading loading-spinner loading-lg text-slate-600"></div>
 				</div>
 			) : (
 				<>
 					<Header />
-					<main className="absolute left-1/2 top-1/2 sm:w-4/6 h-4/6 -translate-x-1/2 -translate-y-1/2 bg-almond shadow-lg text-oxford font-fira-code rounded-sm grid xl:grid-cols-2">
+					<main className="absolute left-1/2 top-1/2 sm:w-4/6 h-4/6 -translate-x-1/2 -translate-y-1/2 bg-slate-900 shadow-lg text-white font-fira-code rounded-sm grid xl:grid-cols-2">
 						<Transition
 							show={activeForm === 'register'}
 							enter="transition-opacity duration-200"
@@ -276,14 +279,14 @@ export const Home = () => {
 							leaveTo="opacity-0"
 						>
 							<div className="w-full h-full flex justify-center">
-								<div className="loading loading-spinner loading-lg text-oxford"></div>
+								<div className="loading loading-spinner loading-lg text-white"></div>
 							</div>
 						</Transition>
-						<div className="bg-oxford absolute w-1/2 h-full right-0 py-24 pt-12 px-28 xl:flex flex-col gap-6 hidden">
-							<span className="text-almond text-md 2xl:text-xl">
+						<div className="bg-slate-800 absolute w-1/2 h-full right-0 py-24 pt-12 px-28 xl:flex flex-col gap-6 hidden">
+							<span className="text-white text-md 2xl:text-xl">
 								Chat with anyone, <br /> from anywhere.
 							</span>
-							<div className="h-full w-full bg-gradient-to-tr from-navy-light via-almond to-navy-light rounded shadow-xl flex flex-col-reverse min-h-fit min-w-fit text-xs 2xl:text-md">
+							<div className="h-full w-full bg-slate-900 rounded shadow-xl flex flex-col-reverse min-h-fit min-w-fit text-xs 2xl:text-md">
 								<ChatBubble
 									type="chat-end"
 									message="Good, still working on that chat app..."
@@ -308,6 +311,6 @@ export const Home = () => {
 					</main>
 				</>
 			)}
-		</>
+		</div>
 	);
 };
