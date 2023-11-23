@@ -28,7 +28,9 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 					}
 				);
 				setUserSearchResults(
-					response.data.filter((user) => user.username !== userState?.user.name)
+					response.data.filter(
+						(user) => user.username !== userState?.user.username
+					)
 				);
 			} catch (error) {
 				console.log(error);
@@ -42,9 +44,28 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 		getUserSearchResults();
 	}, [userSearchText]);
 
-	const handleCreateNewChat = async () => {};
+	const handleCreateNewChat = async () => {
+		try {
+			await axios.post(
+				'http://localhost:3000/api/v1/chats',
+				{
+					user1_id: userState?.user.id,
+					user2_id: selectedUser,
+				},
+				{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setUserSearchText('');
+		}
+	};
 
-	// TODO FIX BUTTON STYLES
 	return (
 		<dialog id="my_modal_3" className="modal">
 			<div className="modal-box bg-slate-800 h-fit overflow-hidden">
