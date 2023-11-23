@@ -6,15 +6,15 @@ import {
 	useState,
 } from 'react';
 
-interface User {
+export interface User {
 	id: number;
-	name: string;
+	username: string;
 }
 
 interface UserState {
 	user: User;
 	setId: Dispatch<SetStateAction<number>>;
-	setName: Dispatch<SetStateAction<string>>;
+	setUsername: Dispatch<SetStateAction<string>>;
 }
 
 interface UserProviderProps {
@@ -25,15 +25,15 @@ export const UserContext = createContext<UserState | null>(null);
 
 export const UserProvider = ({ children }: UserProviderProps) => {
 	const [id, setId] = useState(0);
-	const [name, setName] = useState('');
+	const [username, setUsername] = useState('');
 
 	const providedState: UserState = {
 		user: {
 			id,
-			name,
+			username,
 		},
 		setId,
-		setName,
+		setUsername,
 	};
 
 	return (
