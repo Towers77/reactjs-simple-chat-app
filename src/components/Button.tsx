@@ -17,10 +17,7 @@ export const Button = ({
 }: ButtonProps) => {
 	const buttonStyle = isDisabled
 		? 'text-white/50 bg-slate-950 cursor-default'
-		: textColor +
-		  bgColor +
-		  hoverColor +
-		  'hover:scale-105 hover:shadow-lg active:scale-100';
+		: `${textColor} ${bgColor} ${hoverColor} hover:scale-105 hover:shadow-lg active:scale-100`;
 
 	return (
 		<button
