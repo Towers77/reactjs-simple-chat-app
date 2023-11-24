@@ -1,8 +1,8 @@
 import { Button } from '../../components/Button';
 import { fireEvent, render, screen } from '@testing-library/react';
 
-const handleClick = (p: HTMLElement) => {
-	p.classList.add('clicked');
+const handleClick = (div: HTMLElement) => {
+	div.classList.add('clicked');
 };
 const getButton = () => screen.getByText('Hello');
 const getDiv = () => screen.getByText('Test');
