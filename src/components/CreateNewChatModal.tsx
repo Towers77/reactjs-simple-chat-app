@@ -1,15 +1,10 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { ChatCard } from './ChatCard';
-import { UserContext } from '../utils/context/UserProvider';
+import { User, UserContext } from '../utils/context/UserProvider';
 import { Button } from './Button';
 
 interface CreateNewChatModalProps {}
-
-interface User {
-	username: string;
-	id: number;
-}
 
 export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 	const userState = useContext(UserContext);
