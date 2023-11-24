@@ -19,6 +19,11 @@ export const InputWithLabel = ({
 
 	const showErrorText = errorText !== '';
 
+	const labelStyle = showErrorText ? 'text-red-600' : labelColor;
+	const inputStyle = showErrorText
+		? 'border-red-600 text-red-600'
+		: `border-slate-700 focus:border-slate-500 ${labelColor}`;
+
 	const handleFocus = () => {
 		setLabelColor('text-slate-400');
 	};
@@ -29,13 +34,7 @@ export const InputWithLabel = ({
 	return (
 		<label className="flex flex-col">
 			<div className="flex justify-between">
-				<span
-					className={`${
-						showErrorText ? 'text-red-600' : labelColor
-					} duration-200`}
-				>
-					{label}
-				</span>
+				<span className={`${labelStyle} duration-200`}>{label}</span>
 				{showErrorText && (
 					<span className="text-red-600 text-xs duration-200 self-center max-w-2/3 text-end">
 						{errorText}
@@ -44,11 +43,7 @@ export const InputWithLabel = ({
 			</div>
 			<input
 				name="label"
-				className={`bg-transparent outline-none border-b ${
-					showErrorText
-						? 'border-red-600 text-red-600'
-						: `border-slate-700 focus:border-slate-500 ${labelColor}`
-				} py-1 px-2  duration-300 ease-out focus:scale-105`}
+				className={`bg-transparent outline-none border-b ${inputStyle} py-1 px-2  duration-300 ease-out focus:scale-105`}
 				type={type}
 				maxLength={maxLength}
 				onChange={handleChange}
