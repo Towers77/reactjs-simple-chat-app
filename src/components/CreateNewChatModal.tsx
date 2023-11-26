@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { ChatCard } from './ChatCard';
 import { User, UserContext } from '../utils/context/UserProvider';
@@ -12,6 +12,7 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 	const [userSearchText, setUserSearchText] = useState('');
 	const [userSearchResults, setUserSearchResults] = useState<User[]>([]);
 	const [selectedUser, setSelectedUser] = useState(-1);
+	const [error, setError] = useState('');
 
 	useEffect(() => {
 		const getUserSearchResults = async () => {
@@ -36,6 +37,7 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 			setUserSearchResults([]);
 			return;
 		}
+		setError('');
 		getUserSearchResults();
 	}, [userSearchText]);
 
@@ -55,9 +57,17 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 				}
 			);
 		} catch (error) {
+			if (error instanceof AxiosError) {
+				if (error.response?.status === 400) {
+					setError('You already started a chat with that person');
+				} else {
+					setUserSearchText('');
+					if (document) {
+						(document.getElementById('my_modal_3') as HTMLFormElement).close();
+					}
+				}
+			}
 			console.log(error);
-		} finally {
-			setUserSearchText('');
 		}
 	};
 
@@ -76,7 +86,7 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 						placeholder="Search for a user"
 						onChange={(e) => setUserSearchText(e.target.value)}
 					/>
-
+					{error !== '' && <p className="text-red-500 text-center">{error}</p>}
 					<ul className="grid gap-1 h-32 overflow-y-scroll no-scrollbar mb-2">
 						{userSearchResults.map((user) => (
 							<li
