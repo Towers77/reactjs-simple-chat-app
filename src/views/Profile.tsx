@@ -1,17 +1,16 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { User, UserContext } from '../utils/context/UserProvider';
 import { CreateNewChatModal } from '../components/CreateNewChatModal';
 import { ChatList } from '../components/ChatList';
+import { OptionsDropdown } from '../components/OptionsDropdown';
 
 export const Profile = () => {
 	const userState = useContext(UserContext);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { id } = useParams();
-
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getProfile = async () => {
@@ -33,33 +32,23 @@ export const Profile = () => {
 		getProfile();
 	}, []);
 
-	const handleLogout = async () => {
-		try {
-			const response = await axios.get(
-				'http://localhost:3000/api/v1/auth/logout',
-				{
-					withCredentials: true,
-				}
-			);
-			setIsLoading(true);
-			if (response.status !== 200) throw new Error('Something went wrong...');
-
-			userState?.setUsername('');
-			userState?.setId(0);
-			setTimeout(() => navigate('/'), 1000);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const showCreateNewChatModal = () => {
-		if (document) {
-			(document.getElementById('my_modal_3') as HTMLFormElement).showModal();
+	const handleCloseDropdown = () => {
+		if (
+			(
+				document.getElementById('dd') as HTMLFormElement
+			).attributes.getNamedItem('open')
+		) {
+			(
+				document.getElementById('dd') as HTMLFormElement
+			).attributes.removeNamedItem('open');
 		}
 	};
 
 	return (
-		<div className="bg-slate-950 h-screen w-screen 2xl:p-6 flex justify-center font-fira-code">
+		<div
+			className="bg-slate-950 h-screen w-screen 2xl:p-6 flex justify-center font-fira-code"
+			onClick={handleCloseDropdown}
+		>
 			{isLoading ? (
 				<div className="w-full h-full flex flex-col justify-center place-items-center gap-6">
 					<div className="loading loading-spinner loading-lg text-slate-600"></div>
@@ -83,33 +72,11 @@ export const Profile = () => {
 									{userState?.user.username}
 								</span>
 							</div>
-							<details className="dropdown dropdown-end">
-								<summary className="btn btn-ghost btn-circle">
-									<svg
-										className="w-6 h-6 text-white"
-										aria-hidden="true"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 4 15"
-									>
-										<path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-									</svg>
-								</summary>
-								<ul className="dropdown-content z-[1] menu p-2 mt-2 shadow bg-slate-700 text-white rounded-box w-52">
-									<li>
-										<button onClick={showCreateNewChatModal}>
-											Create new chat
-										</button>
-									</li>
-									<li>
-										<button onClick={handleLogout}>Log out</button>
-									</li>
-								</ul>
-							</details>
+							<OptionsDropdown setIsLoading={setIsLoading} />
 						</div>
 						<ChatList />
 					</aside>
-					<aside className="basis-3/4">lol</aside>
+					<aside className="basis-3/4"></aside>
 				</main>
 			)}
 		</div>
