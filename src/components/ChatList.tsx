@@ -14,6 +14,14 @@ export const ChatList = () => {
 	const [chatSearchText, setChatSearchText] = useState('');
 	const [chatList, setChatList] = useState<ChatCard[]>([]);
 
+	const filterChatList = (chat: ChatCard) => {
+		return userState?.user.id === chat.user1.id
+			? chat.user2.username.toLowerCase().includes(chatSearchText.toLowerCase())
+			: chat.user1.username
+					.toLowerCase()
+					.includes(chatSearchText.toLowerCase());
+	};
+
 	useEffect(() => {
 		const getChatList = async () => {
 			try {
@@ -55,24 +63,26 @@ export const ChatList = () => {
 				onChange={(e) => setChatSearchText(e.target.value)}
 			/>
 			<ul className="grid divide-y divide-white/30">
-				{chatList.map((chat) => {
-					return (
-						<li
-							key={chat.id}
-							className="bg-slate-900 shadow p-2 flex hover:bg-slate-800 duration-75 justify-between"
-						>
-							<ChatCard
-								chatName={
-									userState?.user.id === chat.user2.id
-										? chat.user1.username
-										: chat.user2.username
-								}
-								unreadMessages={0}
-								latestMessage=""
-							/>
-						</li>
-					);
-				})}
+				{chatList
+					.filter((chat) => filterChatList(chat))
+					.map((chat) => {
+						return (
+							<li
+								key={chat.id}
+								className="bg-slate-900 shadow p-2 flex hover:bg-slate-800 duration-75 justify-between"
+							>
+								<ChatCard
+									chatName={
+										userState?.user.id === chat.user2.id
+											? chat.user1.username
+											: chat.user2.username
+									}
+									unreadMessages={0}
+									latestMessage=""
+								/>
+							</li>
+						);
+					})}
 			</ul>
 		</div>
 	);
