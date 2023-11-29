@@ -1,16 +1,34 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { User, UserContext } from '../utils/context/UserProvider';
 import { CreateNewChatModal } from '../components/CreateNewChatModal';
 import { ChatList } from '../components/ChatList';
 import { OptionsDropdown } from '../components/OptionsDropdown';
+import { SelectedChatContext } from '../utils/context/SelectedChatProvider';
+import { Chat } from '../components/Chat';
+import { io } from 'socket.io-client';
 
 export const Profile = () => {
 	const userState = useContext(UserContext);
+	const selectedChatState = useContext(SelectedChatContext);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { id } = useParams();
+
+	const socket = useMemo(
+		() =>
+			io('http://localhost:3000', {
+				withCredentials: true,
+				transports: ['websocket'],
+			}),
+		[]
+	);
+
+	useEffect(() => {
+		socket.emit('joinChat', selectedChatState?.chat.id);
+		socket.emit('findMessagesFromOneChat', selectedChatState?.chat.id);
+	}, [selectedChatState?.chat.id]);
 
 	useEffect(() => {
 		const getProfile = async () => {
@@ -56,7 +74,7 @@ export const Profile = () => {
 			) : (
 				<main className="flex bg-slate-900 w-full h-full z-50 shadow-lg 2xl:w-[1500px] shadow-black/50">
 					<CreateNewChatModal />
-					<aside className="basis-1/4 w-96 flex flex-col ">
+					<aside className="basis-1/4 w-96 flex flex-col shadow-xl">
 						<div className="bg-slate-800 flex justify-between p-3">
 							<div className="flex gap-2">
 								<svg
@@ -76,7 +94,17 @@ export const Profile = () => {
 						</div>
 						<ChatList />
 					</aside>
-					<aside className="basis-3/4"></aside>
+					<aside className="basis-3/4 flex">
+						{selectedChatState?.chat.id === -0 ? (
+							<div className="w-full grid place-content-center">
+								<h1 className="text-2xl text-white text-center">
+									Select a chat to start messaging!
+								</h1>
+							</div>
+						) : (
+							<Chat socket={socket} />
+						)}
+					</aside>
 				</main>
 			)}
 		</div>
