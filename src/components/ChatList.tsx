@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { ChatCard } from './ChatCard';
 import { User, UserContext } from '../utils/context/UserProvider';
 import axios from 'axios';
+import { SelectedChatContext } from '../utils/context/SelectedChatProvider';
+
+interface ChatListProps {}
 
 interface ChatCard {
 	id: number;
@@ -9,8 +12,9 @@ interface ChatCard {
 	user2: User;
 }
 
-export const ChatList = () => {
+export const ChatList = ({}: ChatListProps) => {
 	const userState = useContext(UserContext);
+	const selectedChatState = useContext(SelectedChatContext);
 	const [chatSearchText, setChatSearchText] = useState('');
 	const [chatList, setChatList] = useState<ChatCard[]>([]);
 
@@ -38,6 +42,17 @@ export const ChatList = () => {
 		};
 		if (userState?.user.id !== 0) getChatList();
 	}, [userState?.user.id]);
+
+	const handleSelectChat = (chat: ChatCard) => {
+		selectedChatState?.setId(chat.id);
+		selectedChatState?.setReceiver({
+			id: userState?.user.id === chat.user2.id ? chat.user1.id : chat.user2.id,
+			username:
+				userState?.user.id === chat.user2.id
+					? chat.user1.username
+					: chat.user2.username,
+		});
+	};
 
 	return (
 		<div className="grid">
@@ -69,7 +84,12 @@ export const ChatList = () => {
 						return (
 							<li
 								key={chat.id}
-								className="bg-slate-900 shadow p-2 flex hover:bg-slate-800 duration-75 justify-between"
+								className={`${
+									chat.id === selectedChatState?.chat.id
+										? 'bg-slate-800'
+										: 'bg-slate-900 hover:bg-slate-800'
+								} p-2 flex shadow duration-75 justify-between cursor-pointer`}
+								onClick={() => handleSelectChat(chat)}
 							>
 								<ChatCard
 									chatName={
