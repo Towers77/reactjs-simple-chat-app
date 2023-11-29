@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Home } from './views/Home';
 import { Profile } from './views/Profile';
+import { SelectedChatProvider } from './utils/context/SelectedChatProvider';
 
 const router = createBrowserRouter([
 	{
@@ -9,7 +10,11 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/profile/:id',
-		element: <Profile />,
+		element: (
+			<SelectedChatProvider>
+				<Profile />
+			</SelectedChatProvider>
+		),
 	},
 ]);
 
