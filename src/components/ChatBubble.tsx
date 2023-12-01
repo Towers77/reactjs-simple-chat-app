@@ -29,7 +29,7 @@ export const ChatBubble = ({
 			)}
 			{sentAt && (
 				<div className="chat-footer text-sm opacity-50 mt-1 text-white/50">
-					{time.toLocaleTimeString().slice(0, 4)}
+					{time.toString().slice(16, 21)}
 				</div>
 			)}
 		</div>
