@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { User, UserContext } from '../utils/context/UserProvider';
 import { CreateNewChatModal } from '../components/CreateNewChatModal';
@@ -7,7 +7,7 @@ import { ChatList } from '../components/ChatList';
 import { OptionsDropdown } from '../components/OptionsDropdown';
 import { SelectedChatContext } from '../utils/context/SelectedChatProvider';
 import { Chat } from '../components/Chat';
-import { io } from 'socket.io-client';
+import { socket } from '../socket';
 
 export const Profile = () => {
 	const userState = useContext(UserContext);
@@ -16,17 +16,7 @@ export const Profile = () => {
 
 	const { id } = useParams();
 
-	const socket = useMemo(
-		() =>
-			io('http://localhost:3000', {
-				withCredentials: true,
-				transports: ['websocket'],
-			}),
-		[]
-	);
-
 	useEffect(() => {
-		socket.emit('joinChat', selectedChatState?.chat.id);
 		socket.emit('findMessagesFromOneChat', selectedChatState?.chat.id);
 	}, [selectedChatState?.chat.id]);
 
@@ -92,7 +82,7 @@ export const Profile = () => {
 							</div>
 							<OptionsDropdown setIsLoading={setIsLoading} />
 						</div>
-						<ChatList />
+						<ChatList socket={socket} />
 					</aside>
 					<aside className="basis-3/4 flex">
 						{selectedChatState?.chat.id === -0 ? (
