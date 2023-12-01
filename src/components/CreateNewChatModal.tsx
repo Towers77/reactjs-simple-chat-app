@@ -96,7 +96,7 @@ export const CreateNewChatModal = ({}: CreateNewChatModalProps) => {
 								} rounded-lg p-2 shadow max-h-[3.9rem] cursor-pointer hover:bg-slate-900/50 duration-100`}
 								onClick={() => setSelectedUser(user.id)}
 							>
-								<ChatCard chatName={user.username} unreadMessages={0} />
+								<ChatCard chatId={-1} chatName={user.username} />
 							</li>
 						))}
 					</ul>

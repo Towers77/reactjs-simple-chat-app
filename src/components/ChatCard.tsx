@@ -1,19 +1,53 @@
+import { useContext, useEffect, useState } from 'react';
+import { Socket } from 'socket.io-client';
+import { Message } from './Chat';
+import { UserContext } from '../utils/context/UserProvider';
+import { SelectedChatContext } from '../utils/context/SelectedChatProvider';
+
 export interface ChatCardProps {
+	chatId: number;
 	chatName: string;
-	unreadMessages: number;
-	latestMessage?: string;
+	socket?: Socket;
 }
 
-export const ChatCard = ({
-	chatName,
-	unreadMessages,
-	latestMessage,
-}: ChatCardProps) => {
+export const ChatCard = ({ chatId, chatName, socket }: ChatCardProps) => {
+	const userState = useContext(UserContext);
+	const selectedChatState = useContext(SelectedChatContext);
+	const [latestMessage, setLatestMessage] = useState('');
+	const [unreadMessages, setUnreadMessages] = useState(0);
+
+	useEffect(() => {
+		const addNewMessageBadge = (data: Message) => {
+			console.log(selectedChatState?.chat.id);
+			if (
+				chatId !== selectedChatState?.chat.id &&
+				data.sent_in.id === chatId &&
+				data.sent_by.id !== userState?.user.id
+			) {
+				setUnreadMessages((unreadMessages) => unreadMessages + 1);
+				setLatestMessage(data.text);
+			}
+		};
+
+		socket?.on('createMessage', addNewMessageBadge);
+
+		return () => {
+			socket?.off('createMessage');
+		};
+	}, [selectedChatState?.chat.id]);
+
+	useEffect(() => {
+		if (selectedChatState?.chat.id === chatId) {
+			setLatestMessage('');
+			setUnreadMessages(0);
+		}
+	}, [selectedChatState?.chat.id]);
+
 	return (
 		<>
-			<div className="flex gap-2">
+			<div className="flex gap-2 ">
 				<svg
-					className="w-8 h-8 text-slate-400 rounded-full m-1 mt-[0.4rem]"
+					className="w-8 h-8 shrink-0 text-slate-400 rounded-full m-1 mt-[0.4rem]"
 					aria-hidden="true"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="currentColor"
@@ -29,7 +63,7 @@ export const ChatCard = ({
 					>
 						{chatName}
 					</span>
-					<span className="text-white/50 text-xs line-clamp-1">
+					<span className="text-white/50 text-xs line-clamp-1 break-all min-w-9/10">
 						{latestMessage}
 					</span>
 				</div>

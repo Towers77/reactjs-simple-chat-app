@@ -10,11 +10,14 @@ interface ChatProps {
 	socket: Socket;
 }
 
-interface Message {
+export interface Message {
 	id: number;
 	created_at: Date;
 	text: string;
 	sent_by: User;
+	sent_in: {
+		id: number;
+	};
 }
 
 export const Chat = ({ socket }: ChatProps) => {
@@ -25,14 +28,22 @@ export const Chat = ({ socket }: ChatProps) => {
 	const [messageText, setMessageText] = useState('');
 
 	useEffect(() => {
-		socket.on('findMessagesFromOneChat', (data: Message[]) => {
+		const addNewMessage = (data: Message) => {
+			if (data.sent_in.id === selectedChatState?.chat.id)
+				setMessages((messages) => [data, ...messages]);
+		};
+		const setChatMessages = (data: Message[]) => {
 			setMessages(data.reverse());
-		});
+		};
 
-		socket.on('createMessage', (data: Message) => {
-			setMessages((messages) => [data, ...messages]);
-		});
-	}, []);
+		socket.on('findMessagesFromOneChat', setChatMessages);
+		socket.on('createMessage', addNewMessage);
+
+		return () => {
+			socket.off('findMessagesFromOneChat');
+			socket.off('createMessage', addNewMessage);
+		};
+	}, [selectedChatState?.chat.id]);
 
 	useEffect(() => {
 		setMessageText('');
@@ -58,12 +69,12 @@ export const Chat = ({ socket }: ChatProps) => {
 			<header className="basis-1/12 bg-slate-950/20 flex justify-between pl-6 shadow-lg">
 				<div className="self-center">
 					<ChatCard
+						chatId={-1}
 						chatName={
 							selectedChatState?.chat.receiver.username !== undefined
 								? selectedChatState?.chat.receiver.username
 								: ''
 						}
-						unreadMessages={0}
 					/>
 				</div>
 				<span className="self-center">search</span>

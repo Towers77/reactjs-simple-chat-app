@@ -3,8 +3,11 @@ import { ChatCard } from './ChatCard';
 import { User, UserContext } from '../utils/context/UserProvider';
 import axios from 'axios';
 import { SelectedChatContext } from '../utils/context/SelectedChatProvider';
+import { Socket } from 'socket.io-client';
 
-interface ChatListProps {}
+interface ChatListProps {
+	socket: Socket;
+}
 
 interface ChatCard {
 	id: number;
@@ -12,19 +15,17 @@ interface ChatCard {
 	user2: User;
 }
 
-export const ChatList = ({}: ChatListProps) => {
+export const ChatList = ({ socket }: ChatListProps) => {
 	const userState = useContext(UserContext);
 	const selectedChatState = useContext(SelectedChatContext);
 	const [chatSearchText, setChatSearchText] = useState('');
 	const [chatList, setChatList] = useState<ChatCard[]>([]);
 
-	const filterChatList = (chat: ChatCard) => {
-		return userState?.user.id === chat.user1.id
-			? chat.user2.username.toLowerCase().includes(chatSearchText.toLowerCase())
-			: chat.user1.username
-					.toLowerCase()
-					.includes(chatSearchText.toLowerCase());
-	};
+	useEffect(() => {
+		chatList.forEach((chat) => {
+			socket.emit('joinChat', chat.id);
+		});
+	}, [chatList]);
 
 	useEffect(() => {
 		const getChatList = async () => {
@@ -54,6 +55,14 @@ export const ChatList = ({}: ChatListProps) => {
 		});
 	};
 
+	const filterChatList = (chat: ChatCard) => {
+		return userState?.user.id === chat.user1.id
+			? chat.user2.username.toLowerCase().includes(chatSearchText.toLowerCase())
+			: chat.user1.username
+					.toLowerCase()
+					.includes(chatSearchText.toLowerCase());
+	};
+
 	return (
 		<div className="grid">
 			<svg
@@ -77,7 +86,7 @@ export const ChatList = ({}: ChatListProps) => {
 				placeholder="Search for a chat"
 				onChange={(e) => setChatSearchText(e.target.value)}
 			/>
-			<ul className="grid divide-y divide-white/30">
+			<ul className="flex flex-col divide-y divide-white/30">
 				{chatList
 					.filter((chat) => filterChatList(chat))
 					.map((chat) => {
@@ -92,13 +101,13 @@ export const ChatList = ({}: ChatListProps) => {
 								onClick={() => handleSelectChat(chat)}
 							>
 								<ChatCard
+									chatId={chat.id}
 									chatName={
 										userState?.user.id === chat.user2.id
 											? chat.user1.username
 											: chat.user2.username
 									}
-									unreadMessages={0}
-									latestMessage=""
+									socket={socket}
 								/>
 							</li>
 						);
