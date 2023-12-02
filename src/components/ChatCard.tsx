@@ -17,10 +17,14 @@ export const ChatCard = ({ chatId, chatName, socket }: ChatCardProps) => {
 	const [unreadMessages, setUnreadMessages] = useState(0);
 
 	useEffect(() => {
+		if (selectedChatState?.chat.id === chatId) {
+			setLatestMessage('');
+			setUnreadMessages(0);
+			return;
+		}
+
 		const addNewMessageBadge = (data: Message) => {
-			console.log(selectedChatState?.chat.id);
 			if (
-				chatId !== selectedChatState?.chat.id &&
 				data.sent_in.id === chatId &&
 				data.sent_by.id !== userState?.user.id
 			) {
@@ -34,13 +38,6 @@ export const ChatCard = ({ chatId, chatName, socket }: ChatCardProps) => {
 		return () => {
 			socket?.off('createMessage');
 		};
-	}, [selectedChatState?.chat.id]);
-
-	useEffect(() => {
-		if (selectedChatState?.chat.id === chatId) {
-			setLatestMessage('');
-			setUnreadMessages(0);
-		}
 	}, [selectedChatState?.chat.id]);
 
 	return (
